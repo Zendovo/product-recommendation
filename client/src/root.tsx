@@ -1,5 +1,5 @@
 import * as React from 'react';
 
 export default function () {
-  return <div>Hello World!</div>;
+  return <div className='mt-10'>Hello World!</div>;
 }
