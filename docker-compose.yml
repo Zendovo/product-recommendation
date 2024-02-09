@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  client:
+    container_name: iterateai-client
+    image: zendovo/product-client
+    build: client
+    ports:
+      - 1520:80
+
+  server:
+    container_name: iterateai-server
+    image: zendovo/product-server
+    build: server
+    ports:
+      - 1337:3000
