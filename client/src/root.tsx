@@ -30,7 +30,7 @@ export default function () {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const url = `http://localhost:3000/openai?` + new URLSearchParams({ idea: query });
+    const url = `${process.env.BASE_URL}/openai?` + new URLSearchParams({ idea: query });
     const response1 = await fetch(url, {
       method: 'GET',
     });
@@ -40,7 +40,7 @@ export default function () {
     console.log(json1.json[0].url);
     setImageUrl(json1.json[0].url);
 
-    const productsUrl = `http://localhost:3000/openai/products?` + new URLSearchParams({ idea: query });
+    const productsUrl = `${process.env.BASE_URL}/openai/products?` + new URLSearchParams({ idea: query });
     const response2 = await fetch(productsUrl, {
       method: 'GET',
     });
