@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/products', async (req, res) => {
-    const prompt = `recommend 3 products from the real world that fit the given product idea: ${req.query.idea.slice(0, 80)}`;
+    const prompt = `recommend 3 products from the real world that fit the given product idea and with the following keys (name, description: array of strings): ${req.query.idea.slice(0, 80)}`;
     const completion = await openai.chat.completions.create({
         messages: [
             {
