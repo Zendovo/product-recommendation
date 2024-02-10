@@ -4,7 +4,7 @@ import Product from './components/Product';
 export default function () {
   const [query, setQuery] = React.useState<string>();
   const [imageUrl, setImageUrl] = React.useState<string>();
-  const [products, setProducts] = React.useState<any[]>();
+  const [products, setProducts] = React.useState<any[]>([]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
