@@ -1,0 +1,26 @@
+{
+    "root": true,
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "rules": {},
+    "ignorePatterns": [
+        "dist/",
+        "node_modules/",
+        "webpack.config.js",
+        "tailwind.config.js"
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "env": {
+        "es6": true
+    }
+}

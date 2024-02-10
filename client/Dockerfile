@@ -20,5 +20,12 @@ ENV NODE_ENV production
 
 # Copy built assets from builder
 COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Copy script
+COPY --from=builder /app/run.sh /run.sh
+RUN chmod +x /run.sh
+
 # Expose port
 EXPOSE 80
+
+CMD /run.sh
