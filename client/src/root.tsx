@@ -10,7 +10,7 @@ export default function () {
     e.preventDefault();
 
     try {
-      const url = `${process.env.BASE_URL}/openai?` + new URLSearchParams({ idea: query });
+      const url = `https://zendovo.chickenkiller.com/openai?` + new URLSearchParams({ idea: query });
       const response1 = await fetch(url, {
         method: 'GET',
       });
@@ -19,7 +19,7 @@ export default function () {
 
       setImageUrl(json1.json[0].url);
 
-      const productsUrl = `${process.env.BASE_URL}/openai/products?` + new URLSearchParams({ idea: query });
+      const productsUrl = `https://zendovo.chickenkiller.com/openai/products?` + new URLSearchParams({ idea: query });
       const response2 = await fetch(productsUrl, {
         method: 'GET',
       });
