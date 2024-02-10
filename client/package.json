@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -e ts,tsx --exec npm run build",
-    "build": "sh build.sh",
+    "dev": "nodemon -e ts,tsx --exec npm run buildDev",
+    "buildDev": "sh build.sh",
+    "build": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\" \"src/**/*.js\"",
     "lint": "eslint ."
