@@ -80,12 +80,11 @@ jobs:
     steps:
       - name: install ssh keys
         run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          install -m 600 -D /dev/null ~/.ssh/id_ed25519
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
       - name: connect and pull images
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} docker pull zendovo/product-client && docker pull zendovo/product-server
-      - name: re-run client
-        run: docker rm --force product-client && docker run -d -p 13005:80 --name product-client --env BASE_URL="https://zendovo-api.chickenkiller.com" zendovo/product-client
-      - name: re-run server
-        run: docker rm --force product-server && docker run -d -p 13004:3000 --env OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" zendovo/product-server
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker pull zendovo/product-client && docker pull zendovo/product-server && docker rm --force product-server && docker run -d -p 13004:3000 --env OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" zendovo/product-server && ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} docker rm --force product-client && docker run -d -p 13005:80 --name product-client --env BASE_URL="https://zendovo-api.chickenkiller.com" zendovo/product-client && exit"
+      - name: cleanup
+        run: rm -rf ~/.ssh
