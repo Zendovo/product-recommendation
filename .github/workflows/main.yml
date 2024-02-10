@@ -5,86 +5,86 @@ on:
     branches: [main]
 
 jobs:
-  client:
-    runs-on: ubuntu-latest
+  # client:
+  #   runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./client
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #       working-directory: ./client
 
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 20
-    - name: Client - Install Dependencies
-      run: npm ci
-    - name: Client - Lint
-      run: npm run lint
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
-    - name: Client - Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-    - name: Client - Log in to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - name: Client - Build and push Docker image
-      uses: docker/build-push-action@v5
-      with:
-        context: client
-        push: true
-        tags: zendovo/product-client:latest
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - uses: actions/setup-node@v4
+  #     with:
+  #       node-version: 20
+  #   - name: Client - Install Dependencies
+  #     run: npm ci
+  #   - name: Client - Lint
+  #     run: npm run lint
+  #   - name: Set up QEMU
+  #     uses: docker/setup-qemu-action@v3
+  #   - name: Client - Set up Docker Buildx
+  #     uses: docker/setup-buildx-action@v3
+  #   - name: Client - Log in to Docker Hub
+  #     uses: docker/login-action@v3
+  #     with:
+  #       username: ${{ secrets.DOCKER_USERNAME }}
+  #       password: ${{ secrets.DOCKER_PASSWORD }}
+  #   - name: Client - Build and push Docker image
+  #     uses: docker/build-push-action@v5
+  #     with:
+  #       context: client
+  #       push: true
+  #       tags: zendovo/product-client:latest
   
-  server:
-    runs-on: ubuntu-latest
+  # server:
+  #   runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./server
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #       working-directory: ./server
 
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 20
-    - name: Server - Install Dependencies
-      run: npm ci
-    - name: Server - Lint
-      run: npm run lint
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
-    - name: Server - Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-    - name: Server - Log in to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - name: Server - Build and push Docker image
-      uses: docker/build-push-action@v5
-      with:
-        context: server
-        push: true
-        tags: zendovo/product-server:latest
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - uses: actions/setup-node@v4
+  #     with:
+  #       node-version: 20
+  #   - name: Server - Install Dependencies
+  #     run: npm ci
+  #   - name: Server - Lint
+  #     run: npm run lint
+  #   - name: Set up QEMU
+  #     uses: docker/setup-qemu-action@v3
+  #   - name: Server - Set up Docker Buildx
+  #     uses: docker/setup-buildx-action@v3
+  #   - name: Server - Log in to Docker Hub
+  #     uses: docker/login-action@v3
+  #     with:
+  #       username: ${{ secrets.DOCKER_USERNAME }}
+  #       password: ${{ secrets.DOCKER_PASSWORD }}
+  #   - name: Server - Build and push Docker image
+  #     uses: docker/build-push-action@v5
+  #     with:
+  #       context: server
+  #       push: true
+  #       tags: zendovo/product-server:latest
 
   deploy:
     name: Deploy to server
-    needs:  [client, server]
+    # needs:  [client, server]
 
     runs-on: ubuntu-latest
 
     steps:
       - name: install ssh keys
         run: |
-          install -m 600 -D /dev/null ~/.ssh/id_ed25519
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
       - name: connect and pull images
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "docker pull zendovo/product-client && docker pull zendovo/product-server && docker rm --force product-server && docker run -d -p 13004:3000 --env OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" zendovo/product-server && ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} docker rm --force product-client && docker run -d -p 13005:80 --name product-client --env BASE_URL="https://zendovo-api.chickenkiller.com" zendovo/product-client && exit"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} docker pull zendovo/product-client && docker pull zendovo/product-server && docker rm --force product-server && docker run -d -p 13004:3000 --env OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}" zendovo/product-server && docker rm --force product-client && docker run -d -p 13005:80 --name product-client --env BASE_URL="https://zendovo-api.chickenkiller.com" zendovo/product-client && exit
       - name: cleanup
         run: rm -rf ~/.ssh
