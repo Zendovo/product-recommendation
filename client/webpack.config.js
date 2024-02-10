@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { EnvironmentPlugin } = require("webpack");
 
 const minCssExtractPlugin = new MiniCssExtractPlugin({
     filename: "[name].css"
@@ -57,7 +58,7 @@ const config = (webpackEnv) => {
         resolve: {
             extensions: ['.tsx', '.ts', '.js', '.scss']
         },
-        plugins: [minCssExtractPlugin, htmlPlugin],
+        plugins: [minCssExtractPlugin, htmlPlugin, new EnvironmentPlugin(['BASE_URL'])],
     }
 };
 

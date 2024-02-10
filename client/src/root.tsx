@@ -3,52 +3,33 @@ import Product from './components/Product';
 
 export default function () {
   const [query, setQuery] = React.useState<string>();
-  const [imageUrl, setImageUrl] = React.useState<string>(
-    'https://oaidalleapiprodscus.blob.core.windows.net/private/org-cocwtm6YhDGwmFWb4lGgyipN/user-vl6IDP4MOqzT3HzxS9OFR17g/img-8rTBSRNKNgNqmzkdhFgJViJu.png?st=2024-02-09T21%3A42%3A11Z&se=2024-02-09T23%3A42%3A11Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-02-09T21%3A41%3A34Z&ske=2024-02-10T21%3A41%3A34Z&sks=b&skv=2021-08-06&sig=iJVliBLZXqFTCJpShCDQKfjlq3RAdeah52gdOOD5wRE%3D',
-  );
-  const [products, setProducts] = React.useState<any[]>([
-    {
-      name: 'MyFitnessPal',
-      description: [
-        'MyFitnessPal is a popular fitness app that helps users track their daily food intake and exercise routines.',
-      ],
-    },
-    {
-      name: 'Nike Training Club',
-      description: [
-        'Nike Training Club is a fitness app by Nike that offers a variety of workout programs and personalized training plans.',
-      ],
-    },
-    {
-      name: 'Fitbit',
-      description: [
-        'Fitbit is a fitness tracker that also includes a mobile app for tracking activities, exercise, food intake, and sleep patterns.',
-      ],
-    },
-  ]);
+  const [imageUrl, setImageUrl] = React.useState<string>();
+  const [products, setProducts] = React.useState<any[]>();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const url = `${process.env.BASE_URL}/openai?` + new URLSearchParams({ idea: query });
-    const response1 = await fetch(url, {
-      method: 'GET',
-    });
+    try {
+      const url = `${process.env.BASE_URL}/openai?` + new URLSearchParams({ idea: query });
+      const response1 = await fetch(url, {
+        method: 'GET',
+      });
 
-    const json1 = await response1.json();
+      const json1 = await response1.json();
 
-    console.log(json1.json[0].url);
-    setImageUrl(json1.json[0].url);
+      setImageUrl(json1.json[0].url);
 
-    const productsUrl = `${process.env.BASE_URL}/openai/products?` + new URLSearchParams({ idea: query });
-    const response2 = await fetch(productsUrl, {
-      method: 'GET',
-    });
+      const productsUrl = `${process.env.BASE_URL}/openai/products?` + new URLSearchParams({ idea: query });
+      const response2 = await fetch(productsUrl, {
+        method: 'GET',
+      });
 
-    const json2 = await response2.json();
+      const json2 = await response2.json();
 
-    console.log(json2.data.products);
-    setProducts(json2.data.products);
+      setProducts(json2.data.products);
+    } catch (error) {
+      alert('An error ocurred');
+    }
   };
 
   return (
